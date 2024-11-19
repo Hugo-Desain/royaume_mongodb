@@ -69,10 +69,13 @@ public class GestionCitoyens {
         Document citoyen = citoyens.find(new Document("role", role)).first();
         if (citoyen != null) {
             int quantiteDisponible = citoyen.getInteger("quantite", 0);
+            System.out.println("Quantité disponible pour le rôle " + role + " : " + quantiteDisponible);
             return quantiteDisponible >= quantiteNecessaire;
         }
+        System.out.println("Citoyens non trouvés pour le rôle : " + role);
         return false;
     }
+
 
 
 }

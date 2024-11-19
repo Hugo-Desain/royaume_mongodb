@@ -58,13 +58,14 @@ public class GestionRessources {
 
 
     public boolean verifierRessource(String type, int quantiteNecessaire) {
-        Document ressource = collection.find(new Document("type", type))
-                .sort(Sorts.descending("_id")) // Récupérer le document le plus récent
-                .first();
+        Document ressource = collection.find(new Document("type", type)).first();
         if (ressource != null) {
             int quantiteDisponible = ressource.getInteger("quantite", 0);
+            System.out.println("Quantité disponible pour " + type + " : " + quantiteDisponible);
             return quantiteDisponible >= quantiteNecessaire;
         }
+        System.out.println("Ressource non trouvée : " + type);
         return false;
     }
+
 }
