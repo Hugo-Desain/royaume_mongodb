@@ -1,9 +1,6 @@
 package fr.diginamic;
-import entites.Citoyen;
-import entites.Ressource;
-import com.mongodb.client.MongoCollection;
+
 import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,22 +9,24 @@ public class Main {
         try {
             MongoDatabase database = connexionMongoDB.getDatabase();
 
-            MongoCollection<Document> Ressources = database.getCollection("ressources");
+            GestionRessources ressources = new GestionRessources(database);
+            ressources.ajouterRessource("or", 200);
+            ressources.ajouterRessource("pierre", 1000);
+            ressources.ajouterRessource("bois", 2000);
+            ressources.afficherRessources();
+            ressources.mettreAJourRessource("or", 1000);
 
-            Ressources.insertOne(new Document("type", "Pierre").append("quantite", 200));
-            System.out.println("Ressource 'Pierre' ajoutée");
+            GestionCitoyens citoyens = new GestionCitoyens(database);
+            citoyens.ajouterCitoyen("Villageois",10, "apporter nourriture");
+            citoyens.afficherCitoyens();
+            citoyens.mettreAJourCitoyen("Villageois", "apporter bois", "apporter pierre");
+            citoyens.supprimerCitoyen("Villageois");
 
-            System.out.println("Lecture de toutes les ressources : " + Ressources.find());
-
-            Ressources.updateOne(
-                    new Document("type", "Bois"),
-                    new Document("$set", new Document("quantite", 350))
-            );
-            System.out.println("Mise à jour de la quantité de 'Bois'");
-
-            Ressources.deleteOne(new Document("type", "Pierre"));
-            System.out.println("Suppression de la ressource 'Pierre'");
-
+            GestionBatiments gestionBatiments = new GestionBatiments(database, ressources);
+            gestionBatiments.construireBatiment("Ferme", 400, 300, "Production de nourriture");
+            gestionBatiments.ameliorerBatiment("Ferme");
+            gestionBatiments.afficherBatiments();
+            gestionBatiments.supprimerBatiment("Ferme");
 
         } catch (Exception e) {
             e.printStackTrace();
